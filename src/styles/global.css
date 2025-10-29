@@ -1,0 +1,36 @@
+:root{
+    /* font */
+    --font-base: "ff-din-paneuropean","Sawarabi Gothic",serif;
+
+    /* color */
+    --color-bg: #DDDDDD;
+    --color-primary: #EE5821;
+
+    /* text */
+    --f-base: 16px;
+    --f-caption: 14px;
+    --f-caption-B: 14px bold;
+    --f-large: 24px;
+    --f-display: 48px;
+}
+
+body {
+    font-family: var(--font-base);
+    margin: 0;
+    background-color: var(--color-bg);
+    color: var(--color-primary);
+    line-height: 100%;
+    font-weight: 400;
+}
+
+h1 {
+    font-family: var(--font-base);
+    font-size: var(--f-display);
+    font-weight: 500;;
+}
+
+h2 {
+    font-family: var(--font-base);
+    font-size: var(--f-large);
+    font-weight: 500;
+}

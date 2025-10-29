@@ -1,0 +1,63 @@
+---
+const title = "Kamiina DB";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import DataCard from "../components/DataCard.astro";
+import data from "../data/cards.json";
+
+/** 型定義 */
+interface CardItem {
+  id: string;
+  title: string;
+  caption: string;
+  href: string;
+}
+
+/** 話数をIDから抽出（"12-03" → 12） */
+const getEpisode = (id: string) => {
+  const m = String(id).match(/^(\d+)-\d+$/);
+  return m ? Number(m[1]) : 0;
+};
+
+/** データを episode ごとにグループ化 */
+/* ここがポイント：最初から型付きの空オブジェクトにする */
+const grouped: Record<number, CardItem[]> = {};
+
+(data as CardItem[]).forEach((item) => {
+  const ep = getEpisode(item.id);
+  if (!grouped[ep]) grouped[ep] = [];
+  grouped[ep].push(item);
+});
+
+
+/** 存在する話数の一覧（昇順） */
+const episodeList = Object.keys(grouped).map(Number).sort((a,b)=>a-b);
+
+/** Index用：最大話数までの配列（スキップ話があっても番号は並べたい場合） */
+const maxEp = episodeList.at(-1) ?? 0;
+const indexNumbers = Array.from({length: maxEp}, (_,i)=>i+1);
+---
+<BaseLayout title="Kamiina Botan Database (Unofficial)">
+  <nav class="index">
+    <ul class="index__grid">
+      {indexNumbers.map((n) => (
+        <li>
+          {episodeList.includes(n)
+            ? <a href={`#ep-${n}`}>{n}</a>
+            : <span class="index__disabled">{n}</span>
+          }
+        </li>
+      ))}
+    </ul>
+  </nav>
+
+  <main class="content">
+    {episodeList.map((ep) => (
+      <section class="episode" id={`ep-${ep}`}>
+        <h2 class="episode__title">第{ep}話</h2>
+        {grouped[ep].map((card) => (
+          <DataCard title={card.title} caption={card.caption} href={card.href} />
+        ))}
+      </section>
+    ))}
+  </main>
+</html>

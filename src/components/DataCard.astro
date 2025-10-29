@@ -1,0 +1,29 @@
+---
+const {id, title, caption, href} = Astro.props;
+---
+<a class="card" href={href ?? "#"} target="_blank">
+    <h2>{title}</h2>
+    <p>{caption}</p>
+</div>
+
+<style>
+    .card {
+        display: block;
+        border-bottom: 1px solid var(--color-primary);
+        padding: 0px;
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+        color: var(--color-primary);
+        text-decoration: none;
+        background-color: rgba(0,0,0,0);
+    }
+
+    .card:hover {
+        background-color: var(--color-primary);
+        color: var(--color-bg);
+    }
+
+    .card h2 :hover{
+        color: var(--color-bg);
+    }
+</style>
