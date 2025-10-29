@@ -5,13 +5,21 @@
     /* color */
     --color-bg: #DDDDDD;
     --color-primary: #EE5821;
+    
 
     /* text */
-    --f-base: 16px;
-    --f-caption: 14px;
-    --f-caption-B: 14px bold;
-    --f-large: 24px;
+    --f-base: 14px;
+    --f-caption: 12px;
+    --f-caption-B: 12px bold;
+    --f-large: 20px;
     --f-display: 48px;
+    --f-display-2: 32px;
+
+    text-box-edge: text;
+    text-box-trim: trim-both;
+
+    --index-circle: 20px;      /* 円の直径（調整用） */
+    --index-circle-border: 2px; /* 枠線の太さ */
 }
 
 body {
@@ -21,16 +29,41 @@ body {
     color: var(--color-primary);
     line-height: 100%;
     font-weight: 400;
+    margin: 0px;
+}
+
+p {
+    font-family: var(--font-base);
+    margin: 0;
+    background-color: none;
+    color: var(--color-primary);
+    line-height: 100%;
+    font-weight: 400;
+    margin: 0px;
 }
 
 h1 {
     font-family: var(--font-base);
     font-size: var(--f-display);
     font-weight: 500;;
+    line-height: 100%;
+    margin: 0px;
 }
 
-h2 {
+h2{
+    font-family: var(--font-base);
+    font-size: var(--f-display-2);
+    line-height: 100%;
+    font-weight: 600;
+    margin: 0px;
+}
+
+h3 {
     font-family: var(--font-base);
     font-size: var(--f-large);
-    font-weight: 500;
+    line-height: 100%;
+    font-weight: 400;
+    margin: 0px;
 }
+
+

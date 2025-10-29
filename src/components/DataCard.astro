@@ -2,20 +2,23 @@
 const {id, title, caption, href} = Astro.props;
 ---
 <a class="card" href={href ?? "#"} target="_blank">
-    <h2>{title}</h2>
+    <h3>{title}</h3>
     <p>{caption}</p>
 </div>
 
 <style>
     .card {
-        display: block;
-        border-bottom: 1px solid var(--color-primary);
+        display: flex;
+        flex-flow: column;
+        border-bottom: 0.5px solid var(--color-primary);
         padding: 0px;
-        padding-top: 0.5rem;
-        padding-bottom: 0.5rem;
+        padding-top: 1.5rem;
+        padding-bottom: 1.5rem;
         color: var(--color-primary);
         text-decoration: none;
         background-color: rgba(0,0,0,0);
+        height: 100px;
+        justify-content: space-between;
     }
 
     .card:hover {
@@ -23,7 +26,11 @@ const {id, title, caption, href} = Astro.props;
         color: var(--color-bg);
     }
 
-    .card h2 :hover{
+    .card:hover p {
         color: var(--color-bg);
     }
+
+    /* .card h3 :hover{
+        color: var(--color-bg);
+    } */
 </style>

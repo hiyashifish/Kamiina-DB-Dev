@@ -13,9 +13,9 @@ interface CardItem {
 }
 
 /** 話数をIDから抽出（"12-03" → 12） */
-const getEpisode = (id: string) => {
-  const m = String(id).match(/^(\d+)-\d+$/);
-  return m ? Number(m[1]) : 0;
+const getEpisode = (id: string): number => {
+  const m = id.match(/^(\d+(?:\.\d+)?)-\d+$/);
+  return m ? parseFloat(m[1]) : 0;
 };
 
 /** データを episode ごとにグループ化 */
@@ -34,30 +34,132 @@ const episodeList = Object.keys(grouped).map(Number).sort((a,b)=>a-b);
 
 /** Index用：最大話数までの配列（スキップ話があっても番号は並べたい場合） */
 const maxEp = episodeList.at(-1) ?? 0;
-const indexNumbers = Array.from({length: maxEp}, (_,i)=>i+1);
+const indexNumbers = [0, ...Array.from({ length: maxEp }, (_, i) => i + 1)];
+const firstRow = indexNumbers.slice(0, 10);     // 0〜9 を1行
+const restRows  = indexNumbers.slice(10);       // 10以降は7列グリッド
 ---
 <BaseLayout title="Kamiina Botan Database (Unofficial)">
-  <nav class="index">
-    <ul class="index__grid">
-      {indexNumbers.map((n) => (
-        <li>
-          {episodeList.includes(n)
-            ? <a href={`#ep-${n}`}>{n}</a>
-            : <span class="index__disabled">{n}</span>
-          }
-        </li>
-      ))}
-    </ul>
-  </nav>
+	<h1> Kamiina Botan Database </h1>
+	<h3> Unofficial </h3>
+	<nav class="index">
+		<ul class="index__row10">
+			{firstRow.map((n) => (
+			<li>
+				<a href={n === 0 ? "#top" : `#ep-${n}`}>{n}</a>
+			</li>
+			))}
+		</ul>
 
+		<ul class="index__grid7">
+			{restRows.map((n) => (
+			<li>
+				<a href={`#ep-${n}`}>{n}</a>
+			</li>
+			))}
+		</ul>
+	</nav>
   <main class="content">
     {episodeList.map((ep) => (
       <section class="episode" id={`ep-${ep}`}>
-        <h2 class="episode__title">第{ep}話</h2>
-        {grouped[ep].map((card) => (
-          <DataCard title={card.title} caption={card.caption} href={card.href} />
-        ))}
+		<div class="episode__inner">
+			<div class="cardContainer">
+        		{grouped[ep].map((card) => (
+          		<DataCard title={card.title} caption={card.caption} href={card.href} />
+        		))}
+			</div>
+			<div class="episode__title">
+        		<h2>{ep}</h2>
+			</div>
+		</div>
       </section>
     ))}
   </main>
+
+  <!-- 選択中をハイライト（hashに追従） -->
+<script>
+  const syncActive = () => {
+    const hash = location.hash || '#top';
+    document.querySelectorAll('.index a').forEach(a => {
+      a.removeAttribute('aria-current');
+      if (a.getAttribute('href') === hash) a.setAttribute('aria-current', 'page');
+    });
+  };
+  window.addEventListener('hashchange', syncActive);
+  window.addEventListener('DOMContentLoaded', syncActive);
+</script>
+
 </html>
+
+<style>
+
+	.content {
+		margin: 0 0.5rem 0 0.5rem;
+	}
+
+	.episode__inner {
+		display: flex;
+		align-items: flex-start;
+		justify-content: space-between;
+		gap: 0.5rem;
+	}
+
+	.cardContainer {
+		flex: 1;
+	}
+
+	.episode__title {
+		flex-shrink: 0;
+		width: 44px;
+		text-align: right;
+		margin-top: 1.5rem;
+	}
+
+	.index {
+		width: 1px;
+		margin-left: 0.5rem;
+		margin-bottom: 6em;
+		margin-top: 10rem;
+	}
+	/* 0〜9 を1行で */
+	.index__row10{
+		display: grid;
+		grid-template-columns: repeat(10, auto);
+		gap: .35rem 0.5rem;    /* 画像の密度に寄せて調整 */
+		padding: 0 0 0 0.5rem; margin: 0 0 .6rem; list-style: none;
+	}
+
+	/* 10以降は常に7列 */
+	.index__grid7{
+		display: grid;
+		grid-template-columns: repeat(7, auto);
+		gap: .6rem 0.59rem;     /* 画像の行間っぽく */
+		padding: 0; margin: 0; list-style: none;
+	}
+
+	/* 数字リンクの基本 */
+	.index a{
+		position: relative;     /* ← 疑似要素の基準 */
+		display: inline-block;
+		line-height: 1;
+		text-decoration: none;
+		color: var(--color-primary);
+		font-weight: 700;
+		font-size: var(--f-caption-B);
+		font-family: Arial, Helvetica, sans-serif;
+		padding: 0 .1em;        /* 文字左右の余白（お好みで） */
+	}
+
+	/* 選択状態：固定サイズの正円で囲む（数字ははみ出してOK） */
+	.index a[aria-current="page"]::before{
+		content: "";
+		position: absolute;
+		width: var(--index-circle);
+		height: var(--index-circle);
+		left: 50%;
+		top: 50%;
+		transform: translate(-50%, -50%);  /* 真ん中配置 */
+		border: var(--index-circle-border) solid var(--color-primary);
+		border-radius: 50%;
+		pointer-events: none;   /* クリック邪魔しない */
+	}
+</style>
