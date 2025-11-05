@@ -1,16 +1,17 @@
 :root{
     /* font */
-    --font-base: "ff-din-paneuropean","Sawarabi Gothic",serif;
+    --font-base: "ff-din-paneuropean","fot-cezanne-pron",serif;
 
     /* color */
     --color-bg: #DDDDDD;
     --color-primary: #EE5821;
+    --color-primary-variant: #E49476;
     
 
     /* text */
-    --f-base: 14px;
-    --f-caption: 12px;
-    --f-caption-B: 12px bold;
+    --f-base: 15px;
+    --f-xs: 10px;
+    --f-caption: 13px;
     --f-large: 20px;
     --f-display: 48px;
     --f-display-2: 32px;
@@ -22,13 +23,26 @@
     --index-circle-border: 2px; /* 枠線の太さ */
 }
 
+::selection {
+    color: var(--color-bg);
+    background-color: var(--color-primary);
+}
+
+button {
+    font-family: var(--font-base);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
 body {
     font-family: var(--font-base);
     margin: 0;
     background-color: var(--color-bg);
     color: var(--color-primary);
     line-height: 100%;
-    font-weight: 400;
+    font-weight: 500;
     margin: 0px;
 }
 
@@ -38,9 +52,20 @@ p {
     background-color: none;
     color: var(--color-primary);
     line-height: 100%;
-    font-weight: 400;
+    font-weight: 500;
     margin: 0px;
 }
+
+a {
+    font-family: var(--font-base);
+    margin: 0;
+    background-color: none;
+    color: var(--color-primary);
+    line-height: 100%;
+    font-weight: 700;
+    margin: 0px;
+}
+
 
 h1 {
     font-family: var(--font-base);
@@ -62,7 +87,7 @@ h3 {
     font-family: var(--font-base);
     font-size: var(--f-large);
     line-height: 100%;
-    font-weight: 400;
+    font-weight: 500;
     margin: 0px;
 }
 

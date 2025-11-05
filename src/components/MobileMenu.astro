@@ -1,0 +1,111 @@
+---
+import EpisodeIndex from "./EpisodeIndex.astro";
+
+interface Props {
+  firstRow: number[];
+  restRows: number[];
+  resolveAnchor: (n: number) => string;
+}
+const { firstRow, restRows, resolveAnchor } = Astro.props as Props;
+---
+
+<nav id="mobileMenu" class="mobile-menu" aria-hidden="true">
+  <div class="menu-content" role="dialog" aria-modal="true" aria-label="Episode index">
+    <!-- 共有コンポーネントをそのまま利用 -->
+    <EpisodeIndex {firstRow} {restRows} {resolveAnchor} />
+    <button class="close-btn" onclick="closeMobileMenu()">CLOSE</button>
+  </div>
+</nav>
+
+<style>
+.mobile-menu {
+  position: fixed;
+  inset: 0;
+  background: var(--color-primary);
+  display: none; /* 初期は非表示 */
+  justify-content: center;
+  /* align-items: center; */
+  z-index: 1000;
+}
+.mobile-menu.show {
+  display: flex;
+}
+
+.menu-content {
+  color: var(--color-bg);
+  --color-primary: var(--color-bg);
+  display: flex;
+  flex-flow: column;
+  justify-content: space-between;
+  padding-top: 36vh;
+  padding-bottom: 10vh;
+}
+
+.close-btn {
+  width: 100%;
+  appearance: none;
+  border: none;
+  background: none;
+  color: var(--color-bg);
+  font-size: var(--f-display);
+  font-weight: 700;
+  margin: 0 auto 0 auto;
+}
+
+.contact {
+  font-size: var(--f-base);
+}
+
+html.no-scroll, html.no-scroll body{
+  overflow: hidden;
+  touch-action: none;
+}
+</style>
+
+<script>
+
+  const menu = document.getElementById('mobileMenu');
+
+  window.openMobileMenu = () => {
+    menu?.classList.add('show');
+    menu?.setAttribute('aria-hidden', 'false');
+  };
+
+  window.closeMobileMenu = () => {
+    menu?.classList.remove('show');
+    menu?.setAttribute('aria-hidden', 'true');
+  };
+
+  // ★ インデックスタップ → スクロール → hash更新 → 閉じる
+  menu?.addEventListener('click', (e) => {
+    const t = e.target;
+    if (!(t instanceof Element)) return;
+
+    const a = t.closest('.index a');
+    if (!(a instanceof HTMLAnchorElement)) return;
+
+    e.preventDefault(); // デフォルトの瞬間ジャンプは止める
+    const href = a.getAttribute('href') || '#top';
+
+    if (href === '#top') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      // ハイライト同期（index.astro の hash 連動）
+      if (location.hash !== '#top') location.hash = '#top';
+      window.closeMobileMenu();
+      return;
+    }
+
+    const m = href.match(/^#ep-(\d+)$/);
+    if (m) {
+      const id = m[0].slice(1);          // "ep-XX"
+      const target = document.getElementById(id);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // ハイライト同期用に hash を更新
+        if (location.hash !== href) location.hash = href;
+      }
+    }
+
+    window.closeMobileMenu();
+  });
+</script>

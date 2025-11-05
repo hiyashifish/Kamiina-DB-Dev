@@ -7,8 +7,19 @@ const {title} = Astro.props;
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-witdh, initial-scale=1" />
         <title>{title}</title>
-        <link rel="preconnect" href="https://use.typekit.net">
-        <link rel="stylesheet" href="https://use.typekit.net/zcg4pth.css">
+        <link rel="preconnect" href="https://use.typekit.net" crossorigin>
+        <!--<link rel="preconnect" href="https://p.typekit.net" crossorigin> -->
+        <!-- <link rel="stylesheet" href="https://use.typekit.net/zcg4pth.css"> -->
+        <script>
+            (function(d) {
+                var config = {
+                kitId: 'zcg4pth',
+                scriptTimeout: 3000,
+                async: true
+                },
+                h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;h.className+=" wf-loading";tk.src='https://use.typekit.net/'+config.kitId+'.js';tk.async=true;tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!="complete"&&a!="loaded")return;f=true;clearTimeout(t);try{Typekit.load(config)}catch(e){}};s.parentNode.insertBefore(tk,s)
+            })(document);
+        </script>
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Sawarabi+Gothic&display=swap" rel="stylesheet">

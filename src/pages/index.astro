@@ -3,163 +3,431 @@ const title = "Kamiina DB";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import DataCard from "../components/DataCard.astro";
 import data from "../data/cards.json";
+import EpisodeIndex from "../components/EpisodeIndex.astro";
+import MobileMenu from "../components/MobileMenu.astro";
 
 /** 型定義 */
 interface CardItem {
-  id: string;
+  id: string | number;
   title: string;
   caption: string;
+  description: string;
+  tag: string;
   href: string;
 }
 
-/** 話数をIDから抽出（"12-03" → 12） */
-const getEpisode = (id: string): number => {
-  const m = id.match(/^(\d+(?:\.\d+)?)-\d+$/);
-  return m ? parseFloat(m[1]) : 0;
+/** 数値化（"9.5" も 9.5 に） */
+const parseEp = (id: string | number | null | undefined): number | null => {
+  if (id == null) return null;
+  const n = Number.parseFloat(String(id));
+  return Number.isFinite(n) ? n : null;
 };
 
 /** データを episode ごとにグループ化 */
 /* ここがポイント：最初から型付きの空オブジェクトにする */
-const grouped: Record<number, CardItem[]> = {};
-
-(data as CardItem[]).forEach((item) => {
-  const ep = getEpisode(item.id);
-  if (!grouped[ep]) grouped[ep] = [];
-  grouped[ep].push(item);
-});
-
+/** 1) 整数話ごとにグルーピング（小数は切り捨てで同じ箱へ） */
+const groupedByInt: Record<number, CardItem[]> = {};
+for (const item of data as CardItem[]) {
+  const ep = parseEp(item.id);
+  if (ep == null) continue;
+  const key = Math.floor(ep); // ← 整数話キー
+  (groupedByInt[key] ??= []).push(item);
+}
 
 /** 存在する話数の一覧（昇順） */
-const episodeList = Object.keys(grouped).map(Number).sort((a,b)=>a-b);
+const intEpisodes = Object.keys(groupedByInt)
+  .map(Number)
+  .sort((a, b) => a - b);
 
 /** Index用：最大話数までの配列（スキップ話があっても番号は並べたい場合） */
-const maxEp = episodeList.at(-1) ?? 0;
-const indexNumbers = [0, ...Array.from({ length: maxEp }, (_, i) => i + 1)];
-const firstRow = indexNumbers.slice(0, 10);     // 0〜9 を1行
-const restRows  = indexNumbers.slice(10);       // 10以降は7列グリッド
----
-<BaseLayout title="Kamiina Botan Database (Unofficial)">
-	<h1> Kamiina Botan Database </h1>
-	<h3> Unofficial </h3>
-	<nav class="index">
-		<ul class="index__row10">
-			{firstRow.map((n) => (
-			<li>
-				<a href={n === 0 ? "#top" : `#ep-${n}`}>{n}</a>
-			</li>
-			))}
-		</ul>
+const maxInt = intEpisodes.length ? intEpisodes[intEpisodes.length - 1] : 0;
+const indexNumbers = [0, ...Array.from({ length: maxInt }, (_, i) => i + 1)];
+const firstRow = indexNumbers.slice(0, 10); // 0〜9 を1行
+const restRows = indexNumbers.slice(10); // 10以降は7列グリッド
 
-		<ul class="index__grid7">
-			{restRows.map((n) => (
-			<li>
-				<a href={`#ep-${n}`}>{n}</a>
-			</li>
-			))}
-		</ul>
-	</nav>
-  <main class="content">
-    {episodeList.map((ep) => (
-      <section class="episode" id={`ep-${ep}`}>
-		<div class="episode__inner">
-			<div class="cardContainer">
-        		{grouped[ep].map((card) => (
-          		<DataCard title={card.title} caption={card.caption} href={card.href} />
-        		))}
-			</div>
-			<div class="episode__title">
-        		<h2>{ep}</h2>
-			</div>
+/** 4) Index のリンク解決：
+ *    n が存在しなければ n 未満で最大の “存在する整数話” にフォールバック
+ *    どれも無ければ #top
+ */
+const resolveAnchor = (n: number): string => {
+  if (n === 0) return "#top";
+  // そのままあるならそれ
+  if (groupedByInt[n]) return `#ep-${n}`;
+  // 無ければ n 以下で最大の存在する整数話を探す
+  // intEpisodes は昇順なので逆から当たる
+  for (let i = intEpisodes.length - 1; i >= 0; i--) {
+    const m = intEpisodes[i];
+    if (m <= n) return `#ep-${m}`;
+  }
+  return "#top";
+};
+---
+
+<BaseLayout title="Kamiina Botan Database (Unofficial)">
+  <article class="wrapper">
+    <section class="Top">
+      <div class="PageTitle">
+        <h1>KAMIINA<br />BOTAN<br />CELLAR</h1>
+        <!-- <p>Database</p> -->
+      </div>
+      <EpisodeIndex {firstRow} {restRows} {resolveAnchor} />
+      <!-- <nav class="index">
+			<ul class="index__row10">
+				{firstRow.map((n) => (
+				<li>
+					<a href={resolveAnchor(n)}>{n}</a>
+				</li>
+				))}
+			</ul>
+			
+			<ul class="index__grid7">
+				{restRows.map((n) => (
+				<li>
+					<a href={resolveAnchor(n)}>{n}</a>
+				</li>
+				))}
+			</ul>
+		</nav> -->
+      <div class="Info">
+        <div class="Links">
+          <a
+            href="https://championcross.jp/store_items/5LiK5LyK6YKj44G844Gf44KT44CB6YWU44G444KL5ae_44Gv55m-5ZCI44Gu6Iqx?isDecode=true"
+            target="_blank">Buy ></a
+          >
+          <a
+            href="https://championcross.jp/series/ae4257e66bab5"
+            target="_blank">Read ></a
+          >
+          <a href="https://kamiina-botan.com/" target="_blank">Watch ></a>
+        </div>
+        <div class="Introduction">
+          <p>非公式ファンサイトです.</p>
+          <p>情報は作中描写から推測したもので、実際と異なる場合があります.</p>
+          <p>Mail: hiyashifish [at] gmail.com</p>
+        </div>
+      </div>
+      <button class="MenuBtn" onclick="openMobileMenu()">#</button><MobileMenu
+        {firstRow}
+        {restRows}
+        {resolveAnchor}
+      />
+    </section>
+    <main class="content">
+		<!-- ▼ 並び替えトグルを追加 -->
+		<div class="sort-toggle" id="sort-toggle">
+			<button id="btn-asc" class="active" aria-pressed="true">Oldest</button>
+			<button id="btn-desc" aria-pressed="false">Newest</button>
 		</div>
-      </section>
-    ))}
-  </main>
+		{
+			intEpisodes.map((epInt) => (
+				<section class="episode" id={`ep-${epInt}`} data-ep={epInt}>
+            <div class="episode__inner">
+              <div class="cardContainer">
+                {groupedByInt[epInt].map((card) => (
+					<DataCard
+                    title={card.title}
+                    caption={card.caption}
+                    href={card.href}
+                    description={card.description}
+                    tag={card.tag}
+					/>
+                ))}
+              </div>
+              <div class="episode__title">
+                <h2>{epInt}</h2>
+              </div>
+            </div>
+          </section>
+        ))
+	}
+	<a class="BackBtn" href="#top">^</a>
+    </main>
+  </article>
 
   <!-- 選択中をハイライト（hashに追従） -->
-<script>
-  const syncActive = () => {
-    const hash = location.hash || '#top';
-    document.querySelectorAll('.index a').forEach(a => {
-      a.removeAttribute('aria-current');
-      if (a.getAttribute('href') === hash) a.setAttribute('aria-current', 'page');
-    });
-  };
-  window.addEventListener('hashchange', syncActive);
-  window.addEventListener('DOMContentLoaded', syncActive);
-</script>
+  <script>
+    const links = Array.from(document.querySelectorAll(".index a"));
 
-</html>
+    /** ハッシュに応じて aria-current を更新（常に1つだけ） */
+    const syncActive = () => {
+      let hash = location.hash || "#top";
+
+      // 存在しないhashなら一番近い下位のリンクにフォールバック
+      if (!document.querySelector(hash)) {
+        // #ep-10 のような形式を解析
+        const m = hash.match(/^#ep-(\d+)/);
+        if (m) {
+          const targetNum = parseInt(m[1], 10);
+          // ep-n の最大値を探す（例：#ep-9, #ep-8 ...）
+          for (let n = targetNum - 1; n >= 0; n--) {
+            const candidate = document.querySelector(`#ep-${n}`);
+            if (candidate) {
+              hash = `#ep-${n}`;
+              break;
+            }
+          }
+        }
+        // どれも無ければ #top に戻す
+        if (!document.querySelector(hash)) hash = "#top";
+      }
+
+      // 全てリセットしてから1つだけ current を付与
+      links.forEach((a) => a.removeAttribute("aria-current"));
+      const activeLink = links.find((a) => a.getAttribute("href") === hash);
+      if (activeLink) {
+        activeLink.setAttribute("aria-current", "page");
+      } else {
+        // hashが一致しない場合でも必ず0番目(=top)に付与
+        const first = links.find((a) => a.getAttribute("href") === "#top");
+        if (first) first.setAttribute("aria-current", "page");
+      }
+    };
+
+    window.addEventListener("hashchange", syncActive);
+    window.addEventListener("DOMContentLoaded", syncActive);
+  </script>
+  <script type="module">
+    import "/src/scripts/sortCards.ts";
+  </script>
+</BaseLayout>
 
 <style>
+  .wrapper {
+    margin-bottom: 100px;
+  }
 
-	.content {
-		margin: 0 0.5rem 0 0.5rem;
-	}
+  .BackBtn {
+    position: sticky;
+    font-size: var(--f-display-2);
+    text-decoration: none;
+    appearance: none;
+    top: 85vh;
+	left: 100vw;
+    /* margin: auto; */
+    font-weight: 500;
+    -webkit-tap-highlight-color: #e65100;
+	text-align: right;
+  }
 
-	.episode__inner {
-		display: flex;
-		align-items: flex-start;
-		justify-content: space-between;
-		gap: 0.5rem;
-	}
+  .MenuBtn {
+    position: fixed;
+    appearance: none;
+    border: none;
+    background: none;
+    color: var(--color-primary);
+    font-size: var(--f-display-2);
+    inset: 22vh 7px auto auto;
+    padding: 0;
+    margin: auto;
+    font-weight: 500;
+  }
 
-	.cardContainer {
-		flex: 1;
-	}
+  .Top {
+    margin: 0 0.5rem 0 0.5rem;
+    height: 93vh;
+    display: flex;
+    flex-flow: column;
+    justify-content: space-between;
+  }
 
-	.episode__title {
-		flex-shrink: 0;
-		width: 44px;
-		text-align: right;
-		margin-top: 1.5rem;
-	}
+  .PageTitle {
+    margin-left: -2px;
+  }
 
-	.index {
-		width: 1px;
-		margin-left: 0.5rem;
-		margin-bottom: 6em;
-		margin-top: 10rem;
-	}
-	/* 0〜9 を1行で */
-	.index__row10{
-		display: grid;
-		grid-template-columns: repeat(10, auto);
-		gap: .35rem 0.5rem;    /* 画像の密度に寄せて調整 */
-		padding: 0 0 0 0.5rem; margin: 0 0 .6rem; list-style: none;
-	}
+  .PageTitle h1 {
+    /* width: 50vw;
+		text-align: end; */
+    /* margin-bottom: 4rem; */
+    font-weight: 700;
+    letter-spacing: 0.003em;
+  }
 
-	/* 10以降は常に7列 */
-	.index__grid7{
-		display: grid;
-		grid-template-columns: repeat(7, auto);
-		gap: .6rem 0.59rem;     /* 画像の行間っぽく */
-		padding: 0; margin: 0; list-style: none;
-	}
+  .PageTitle p {
+    font-size: var(--f-display);
+    font-weight: 400;
+    letter-spacing: -0.05em;
+    margin-top: -2px;
+  }
 
-	/* 数字リンクの基本 */
-	.index a{
-		position: relative;     /* ← 疑似要素の基準 */
-		display: inline-block;
-		line-height: 1;
-		text-decoration: none;
-		color: var(--color-primary);
-		font-weight: 700;
-		font-size: var(--f-caption-B);
-		font-family: Arial, Helvetica, sans-serif;
-		padding: 0 .1em;        /* 文字左右の余白（お好みで） */
-	}
+  .Info {
+    display: flex;
+  }
 
-	/* 選択状態：固定サイズの正円で囲む（数字ははみ出してOK） */
-	.index a[aria-current="page"]::before{
-		content: "";
-		position: absolute;
-		width: var(--index-circle);
-		height: var(--index-circle);
-		left: 50%;
-		top: 50%;
-		transform: translate(-50%, -50%);  /* 真ん中配置 */
-		border: var(--index-circle-border) solid var(--color-primary);
-		border-radius: 50%;
-		pointer-events: none;   /* クリック邪魔しない */
-	}
+  .Introduction {
+    flex: 1;
+    font-size: var(--f-caption);
+  }
+
+  .Introduction p {
+    margin-bottom: 13px;
+  }
+
+  .Links {
+    flex: 1;
+    display: flex;
+    flex-flow: column;
+    align-items: start;
+    gap: 10px;
+    font-size: var(--f-base);
+  }
+
+  .Links a {
+    font-weight: 500;
+    text-decoration: none;
+  }
+
+  .sort-toggle {
+    display: flex;
+    gap: 0.5rem;
+    margin: 0 0 1rem 0;
+    font-weight: 700;
+    color: #e65100;
+    /* justify-content: end; */
+  }
+  .sort-toggle button {
+    background: none;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    font-size: var(--f-base);
+    font-weight: 700;
+    padding: 0;
+  }
+  .sort-toggle button.active::before {
+    content: "■ ";
+  }
+  .sort-toggle button:not(.active)::before {
+    content: "□ ";
+  }
+
+  .content {
+    margin: 100px 0.5rem 0 0.5rem;
+  }
+
+  .episode__inner {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .cardContainer {
+    flex: 1;
+  }
+
+  .episode__title {
+    flex-shrink: 0;
+    width: 34px;
+    text-align: right;
+    margin-top: 0.5rem;
+  }
+
+  .index {
+    margin-right: auto;
+    margin-left: auto;
+    padding-left: 0rem;
+    padding-right: 2rem;
+    /* margin-bottom: 10rem;
+		margin-top: 6rem; */
+  }
+  /* 0〜9 を1行で */
+  .index__row10 {
+    display: grid;
+    grid-template-columns: repeat(10, auto);
+    gap: 0.35rem 0.5rem;
+    padding: 0 0 0 0.5rem;
+    margin: 0 0 0.6rem;
+    list-style: none;
+  }
+
+  /* 10以降は常に7列 */
+  .index__grid7 {
+    display: grid;
+    grid-template-columns: repeat(7, auto);
+    gap: 0.6rem 0.59rem;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  /* 数字リンクの基本 */
+  .index a {
+    font-family: "helvetica-neue-lt-pro", serif;
+    font-weight: 700;
+    position: relative; /* ← 疑似要素の基準 */
+    display: inline-block;
+    line-height: 1;
+    text-decoration: none;
+    color: var(--color-primary);
+    font-size: var(--f-caption-B);
+    padding: 0 0.1em; /* 文字左右の余白 */
+  }
+
+  /* 選択状態：固定サイズの正円で囲む（数字ははみ出してOK） */
+  .index a[aria-current="page"]::before {
+    content: "";
+    position: absolute;
+    width: var(--index-circle);
+    height: var(--index-circle);
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%); /* 真ん中配置 */
+    border: var(--index-circle-border) solid var(--color-primary);
+    border-radius: 50%;
+    pointer-events: none; /* クリック邪魔しない */
+  }
+
+  /* PC layout */
+  @media (min-width: 768px) {
+    .wrapper {
+      display: flex;
+      align-items: flex-start;
+      max-width: 1080px;
+      margin: auto;
+      margin-bottom: 100px;
+    }
+
+    .BackBtn {
+      display: none;
+    }
+
+    .Top {
+      /* position: fixed; */
+      top: 0rem;
+      position: sticky;
+      height: fit-content;
+      width: 200px;
+      align-items: start;
+      margin-right: 50px;
+      gap: 4rem;
+    }
+
+    .Info {
+      flex-flow: column;
+      gap: 4rem;
+    }
+
+    .Links {
+      /* flex-flow: row; */
+      font-size: var(--f-base);
+    }
+
+    .MenuBtn {
+      display: none;
+    }
+
+    .content {
+      flex: 1;
+      margin-top: 0px;
+    }
+
+    .sort-toggle {
+      position: sticky;
+      top: 0rem;
+      margin: 0px 0 0 0;
+      padding-top: 1rem;
+      padding-bottom: 1rem;
+      background-color: var(--color-bg);
+    }
+  }
 </style>

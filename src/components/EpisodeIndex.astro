@@ -1,0 +1,72 @@
+---
+/** 必ず episodes 配列を受け取る */
+const { firstRow, restRows, resolveAnchor } = Astro.props;
+---
+
+<nav class="index">
+  <ul class="index__row10">
+    {firstRow.map((n: number) => (
+      <li><a href={resolveAnchor(n)}>{n}</a></li>
+    ))}
+  </ul>
+  <ul class="index__grid7">
+    {restRows.map((n :number) => (
+      <li><a href={resolveAnchor(n)}>{n}</a></li>
+    ))}
+  </ul>
+</nav>
+
+<style>
+.index {
+  margin-right: auto;
+  margin-left: auto;
+  padding-left: 0rem;
+  padding-right: 0rem;
+}
+
+@media (min-width: 768px) {
+  .index{
+    margin-left: 0px;
+  }
+}
+
+.index__row10 {
+  display: grid;
+  grid-template-columns: repeat(10, auto);
+  gap: .35rem 0.5rem;
+  padding: 0 0 0 0.5rem;
+  margin: 0 0 .6rem;
+  list-style: none;
+}
+.index__grid7 {
+  display: grid;
+  grid-template-columns: repeat(7, auto);
+  gap: .6rem 0.59rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.index a {
+  font-family: "helvetica-neue-lt-pro", serif;
+  font-weight: 700;
+  position: relative;
+  display: inline-block;
+  line-height: 1;
+  text-decoration: none;
+  color: var(--color-primary);
+  font-size: var(--f-caption-B);
+  padding: 0 .1em;
+}
+.index a[aria-current="page"]::before {
+  content: "";
+  position: absolute;
+  width: var(--index-circle);
+  height: var(--index-circle);
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  border: var(--index-circle-border) solid var(--color-primary);
+  border-radius: 50%;
+  pointer-events: none;
+}
+</style>
