@@ -69,11 +69,13 @@ html.no-scroll, html.no-scroll body{
   window.openMobileMenu = () => {
     menu?.classList.add('show');
     menu?.setAttribute('aria-hidden', 'false');
+    document.documentElement.classList.add('no-scroll');
   };
 
   window.closeMobileMenu = () => {
     menu?.classList.remove('show');
     menu?.setAttribute('aria-hidden', 'true');
+    document.documentElement.classList.remove('no-scroll'); 
   };
 
   // ★ インデックスタップ → スクロール → hash更新 → 閉じる
