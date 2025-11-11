@@ -1,4 +1,4 @@
-// src/scripts/sortCards.ts
+
 
 type Order = 'asc' | 'desc';
 

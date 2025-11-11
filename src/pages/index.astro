@@ -63,7 +63,7 @@ const resolveAnchor = (n: number): string => {
 };
 ---
 
-<BaseLayout title="Kamiina Botan Database (Unofficial)">
+<BaseLayout title="Kamiina Botan Cellar (Unofficial)">
   <article class="wrapper">
     <section class="Top">
       <div class="PageTitle">
@@ -189,9 +189,15 @@ const resolveAnchor = (n: number): string => {
     window.addEventListener("hashchange", syncActive);
     window.addEventListener("DOMContentLoaded", syncActive);
   </script>
-  <script type="module">
-    import "/src/scripts/sortCards.ts";
-  </script>
+<script type="module" is:inline>
+  import '../../src/scripts/sortCards.ts';
+</script>
+<!-- <script type="module" is:inline>
+  // Dev 専用: /src を絶対 URL で読み込む（必ず http(s) になる）
+  const url = new URL('/src/scripts/sortCards.ts', location.origin);
+  console.log('RESOLVED DEV URL =', url.href);
+  await import(url.href);
+</script> -->
 </BaseLayout>
 
 <style>
