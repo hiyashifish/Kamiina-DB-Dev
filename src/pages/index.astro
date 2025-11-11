@@ -121,7 +121,7 @@ const resolveAnchor = (n: number): string => {
         <button id="btn-asc" class="active" aria-pressed="true">Oldest</button>
         <button id="btn-desc" aria-pressed="false">Newest</button>
       </div>
-        <a class="BackBtn" href="#top">^</a>
+      <a class="BackBtn" href="#top">^</a>
       {
         intEpisodes.map((epInt) => (
           <section class="episode" id={`ep-${epInt}`} data-ep={epInt}>
@@ -189,15 +189,9 @@ const resolveAnchor = (n: number): string => {
     window.addEventListener("hashchange", syncActive);
     window.addEventListener("DOMContentLoaded", syncActive);
   </script>
-<script>
-  import '../scripts/sortCards';
-</script>
-<!-- <script type="module" is:inline>
-  // Dev 専用: /src を絶対 URL で読み込む（必ず http(s) になる）
-  const url = new URL('/src/scripts/sortCards.ts', location.origin);
-  console.log('RESOLVED DEV URL =', url.href);
-  await import(url.href);
-</script> -->
+  <script>
+    import "../scripts/sortCards";
+  </script>
 </BaseLayout>
 
 <style>
@@ -208,19 +202,20 @@ const resolveAnchor = (n: number): string => {
   .BackBtn {
     position: sticky;
     font-size: var(--f-display-2);
-    text-decoration: none;
+    /* text-decoration: none; */
     appearance: none;
     top: 85vh;
     left: 100vw;
     /* margin: auto; */
     font-weight: 500;
-    -webkit-tap-highlight-color: #e65100;
+    -webkit-tap-highlight-color: var(--color-primary);
     text-align: right;
   }
 
   .MenuBtn {
     position: fixed;
     appearance: none;
+    /* text-decoration: underline; */
     border: none;
     background: none;
     color: var(--color-primary);
@@ -291,7 +286,7 @@ const resolveAnchor = (n: number): string => {
     gap: 0.5rem;
     margin: 0 0 1rem 0;
     font-weight: 700;
-    color: #e65100;
+    color: var(--color-primary);
     /* justify-content: end; */
   }
   .sort-toggle button {
@@ -302,7 +297,9 @@ const resolveAnchor = (n: number): string => {
     font-size: var(--f-base);
     font-weight: 700;
     padding: 0;
+    -webkit-tap-highlight-color: var(--color-primary)
   }
+
   .sort-toggle button.active::before {
     content: "■ ";
   }
