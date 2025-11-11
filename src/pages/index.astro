@@ -101,7 +101,10 @@ const resolveAnchor = (n: number): string => {
           <a href="https://kamiina-botan.com/" target="_blank">Watch ></a>
         </div>
         <div class="Introduction">
-          <p>当サイトは『上伊那ぼたん、酔へる姿は百合の花(塀 著)』の作中に登場する実在のアイテムを紹介する非公式サイトです.</p>
+          <p>
+            当サイトは『上伊那ぼたん、酔へる姿は百合の花(塀
+            著)』の作中に登場する実在のアイテムを紹介する非公式サイトです.
+          </p>
           <p>情報は作中描写から推測したもので、実際と異なる可能性があります.</p>
           <p>Mail: hiyashifish [at] gmail.com</p>
         </div>
@@ -113,24 +116,25 @@ const resolveAnchor = (n: number): string => {
       />
     </section>
     <main class="content">
-		<!-- ▼ 並び替えトグルを追加 -->
-		<div class="sort-toggle" id="sort-toggle">
-			<button id="btn-asc" class="active" aria-pressed="true">Oldest</button>
-			<button id="btn-desc" aria-pressed="false">Newest</button>
-		</div>
-		{
-			intEpisodes.map((epInt) => (
-				<section class="episode" id={`ep-${epInt}`} data-ep={epInt}>
+      <!-- ▼ 並び替えトグルを追加 -->
+      <div class="sort-toggle" id="sort-toggle">
+        <button id="btn-asc" class="active" aria-pressed="true">Oldest</button>
+        <button id="btn-desc" aria-pressed="false">Newest</button>
+      </div>
+        <a class="BackBtn" href="#top">^</a>
+      {
+        intEpisodes.map((epInt) => (
+          <section class="episode" id={`ep-${epInt}`} data-ep={epInt}>
             <div class="episode__inner">
               <div class="cardContainer">
                 {groupedByInt[epInt].map((card) => (
-					<DataCard
+                  <DataCard
                     title={card.title}
                     caption={card.caption}
                     href={card.href}
                     description={card.description}
                     tag={card.tag}
-					/>
+                  />
                 ))}
               </div>
               <div class="episode__title">
@@ -139,8 +143,7 @@ const resolveAnchor = (n: number): string => {
             </div>
           </section>
         ))
-	}
-	<a class="BackBtn" href="#top">^</a>
+      }
     </main>
   </article>
 
@@ -202,11 +205,11 @@ const resolveAnchor = (n: number): string => {
     text-decoration: none;
     appearance: none;
     top: 85vh;
-	left: 100vw;
+    left: 100vw;
     /* margin: auto; */
     font-weight: 500;
     -webkit-tap-highlight-color: #e65100;
-	text-align: right;
+    text-align: right;
   }
 
   .MenuBtn {
