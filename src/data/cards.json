@@ -994,7 +994,7 @@
   {
     "id": 57,
     "title": "名指しと必然性",
-    "href": "https://www.maruzenjunkudo.co.jp/products/9784782800225?srsltid=AfmBOor3a784LKdMkdo1_0-99Grynz1KA--noMucqxgt3u2EwHQ_p47z",
+    "href": "名指しと必然性 – 丸善ジュンク堂書店ネットストア",
     "caption": "1972, Saul Kripke",
     "description": "",
     "tag": "BOOK"
@@ -1214,5 +1214,29 @@
     "caption": "Alc.44%, Eau de Vie",
     "description": "もちろんです！",
     "tag": "SAKE"
+  },
+  {
+    "id": 68,
+    "title": "よつ葉バター",
+    "href": "https://www.yotsuba-shop.com/Form/Product/ProductList.aspx?shop=0&cat=000002&srsltid=AfmBOoplQunSAfV5Q0cOcuVlx-f3W7D33CbGT6AlObvU3EPv9njL6t01",
+    "caption": "Butter, Yotsuba Milk",
+    "description": "適量ってなに？",
+    "tag": "FOOD"
+  },
+  {
+    "id": 68,
+    "title": "ゲランドの塩",
+    "href": "https://aquamer.co.jp/item/sel_marin_de_guerande/",
+    "caption": "Sea Salt",
+    "description": "ううん大丈夫",
+    "tag": "FOOD"
+  },
+  {
+    "id": 68,
+    "title": "GS-3 ペティナイフ",
+    "href": "https://global.yoshikin.co.jp/SHOP/GS-3.html?srsltid=AfmBOope0HrOM6uQ7QFcYS1qy7gul5QWkd4ewt4wGt4uiquMrzDWDT9Z",
+    "caption": "Petty Knife, GLOBAL",
+    "description": "これは私がひとりでやりたくて",
+    "tag": "ITEM"
   }
 ]
