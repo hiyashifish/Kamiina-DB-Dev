@@ -1238,5 +1238,29 @@
     "caption": "Petty Knife, GLOBAL",
     "description": "これは私がひとりでやりたくて",
     "tag": "ITEM"
+  },
+  {
+    "id": 69,
+    "title": "スーパードライホール",
+    "href": "https://www.asahibeer.co.jp/aboutus/summary/",
+    "caption": "Sumida, Tokyo",
+    "description": "したいこと いっぱいあるんで",
+    "tag": "SPOT"
+  },
+  {
+    "id": 69,
+    "title": "カトリック碑文谷教会",
+    "href": "https://himonya-salesio.jp/",
+    "caption": "Meguro, Tokyo",
+    "description": "つかれたーっ！",
+    "tag": "SPOT"
+  },
+  {
+    "id": 69,
+    "title": "東京駅丸の内駅舎",
+    "href": "https://www.tokyostationcity.com/learning/station_building/",
+    "caption": "Chiyoda, Tokyo",
+    "description": "楽しかったっすね",
+    "tag": "SPOT"
   }
 ]
