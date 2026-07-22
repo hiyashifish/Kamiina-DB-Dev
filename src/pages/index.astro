@@ -1,5 +1,4 @@
 ---
-const title = "Kamiina DB";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import DataCard from "../components/DataCard.astro";
 import { getCards, type CardItem } from "../lib/microcms";
@@ -7,6 +6,57 @@ import EpisodeIndex from "../components/EpisodeIndex.astro";
 import MobileMenu from "../components/MobileMenu.astro";
 
 const data = await getCards();
+const siteTitle = "KAMIINA BOTAN CELLAR｜『上伊那ぼたん、酔へる姿は百合の花』登場アイテムDB";
+const siteDescription = "『上伊那ぼたん、酔へる姿は百合の花』の作中に登場するお酒・本・音楽・場所などの実在アイテムを、登場話ごとに紹介する非公式データベースです。";
+const siteUrl = "https://jijonomajiwari.com/";
+
+const structuredData = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": `${siteUrl}#website`,
+      url: siteUrl,
+      name: "KAMIINA BOTAN CELLAR",
+      alternateName: "Kamiina Botan Cellar (Unofficial)",
+      description: siteDescription,
+      inLanguage: "ja",
+    },
+    {
+      "@type": "CollectionPage",
+      "@id": `${siteUrl}#webpage`,
+      url: siteUrl,
+      name: siteTitle,
+      description: siteDescription,
+      inLanguage: "ja",
+      isPartOf: { "@id": `${siteUrl}#website` },
+      about: {
+        "@type": "CreativeWork",
+        name: "上伊那ぼたん、酔へる姿は百合の花",
+      },
+      mainEntity: { "@id": `${siteUrl}#items` },
+    },
+    {
+      "@type": "ItemList",
+      "@id": `${siteUrl}#items`,
+      name: "作中登場アイテム一覧",
+      numberOfItems: data.length,
+      itemListOrder: "https://schema.org/ItemListOrderAscending",
+      itemListElement: data.map((card, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        item: {
+          "@type": "Thing",
+          name: card.title,
+          description: [card.caption, card.description].filter(Boolean).join(" — "),
+          identifier: `episode-${card.id}`,
+          category: card.tag,
+          ...(card.href.startsWith("http") ? { url: card.href } : {}),
+        },
+      })),
+    },
+  ],
+};
 
 /** 数値化（"9.5" も 9.5 に） */
 const parseEp = (id: string | number | null | undefined): number | null => {
@@ -55,7 +105,7 @@ const resolveAnchor = (n: number): string => {
 };
 ---
 
-<BaseLayout title="Kamiina Botan Cellar (Unofficial)">
+<BaseLayout title={siteTitle} description={siteDescription} {structuredData}>
   <article class="wrapper">
     <section class="Top">
       <div class="PageTitle">

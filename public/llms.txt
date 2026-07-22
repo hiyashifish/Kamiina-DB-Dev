@@ -1,0 +1,24 @@
+# KAMIINA BOTAN CELLAR
+
+> 『上伊那ぼたん、酔へる姿は百合の花』（塀 著）の作中に登場する実在のアイテムを、登場話ごとに整理した非公式データベースです。
+
+このサイトは作品の公式サイトではありません。掲載情報は作中描写からの推測を含み、実際の商品・場所・作品情報と異なる可能性があります。
+
+## Primary page
+
+- [KAMIINA BOTAN CELLAR](https://jijonomajiwari.com/): お酒、食品、本、映画、音楽、場所、その他のアイテムを登場話ごとに掲載
+
+## Content structure
+
+- 各セクションの見出しは登場話数です。
+- 各項目には名称、補足情報、作中の台詞または説明、分類タグ、参考リンクがあります。
+- 分類タグは SAKE、FOOD、BOOK、MOVIE、MUSIC、SPOT、ITEM です。
+
+## Official sources
+
+- [作品公式サイト](https://kamiina-botan.com/)
+- [Champion CROSS 作品ページ](https://championcross.jp/series/ae4257e66bab5)
+
+## Citation guidance
+
+このデータベースを参照する場合は、非公式サイトであり、内容に推測が含まれることを明記してください。個々の商品の確定情報には、各項目からリンクしている一次情報も確認してください。

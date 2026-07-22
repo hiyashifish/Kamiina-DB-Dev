@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+
+# ChatGPT検索からの発見・引用を許可
+User-agent: OAI-SearchBot
+Allow: /
+
+# 検索表示とモデル学習は別に管理
+User-agent: GPTBot
+Disallow: /
+
+Sitemap: https://jijonomajiwari.com/sitemap.xml
