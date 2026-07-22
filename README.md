@@ -1,43 +1,64 @@
-# Astro Starter Kit: Minimal
+# KAMIINA BOTAN CELLAR
+
+Astro + microCMS で管理する非公式データベースサイトです。
+
+## microCMSの設定
+
+microCMSでリスト形式APIを1つ作成します。
+
+- API名: Cards（任意）
+- エンドポイント: `cards`
+
+フィールドは次の順で作成してください。
+
+| フィールドID | 表示名 | 種類 | 必須 |
+| --- | --- | --- | --- |
+| `episode` | 話数 | 数字 | はい |
+| `title` | タイトル | テキストフィールド | はい |
+| `caption` | 補足 | テキストフィールド | いいえ |
+| `description` | 作中の説明 | テキストエリア | いいえ |
+| `tag` | タグ | セレクトフィールド | はい |
+| `href` | リンク | テキストフィールド | はい |
+
+`tag` の選択肢には、現在使っている `SAKE`, `FOOD`, `MOVIE`, `SPOT`,
+`BOOK`, `MUSIC`, `ITEM` を登録します。
+
+`.env.example` を `.env` にコピーし、サービスドメインとGET専用APIキーを
+設定してください。APIキーは公開せず、ホスティング先でも環境変数として設定します。
+
+```env
+MICROCMS_SERVICE_DOMAIN=your-service-domain
+MICROCMS_API_KEY=your-read-only-api-key
+MICROCMS_ENDPOINT=cards
+```
+
+環境変数が未設定のローカル環境では `src/data/cards.json` を表示するため、
+microCMSの準備前でも開発できます。本番ビルド時はmicroCMSから全件を取得します。
+100件を超えても自動でページングします。
+
+## 既存JSONの初回移行
+
+APIキーに一時的にPOST権限を付け、`.env` に次を追加します。
+
+```env
+MICROCMS_WRITE_API_KEY=your-write-api-key
+```
+
+次を一度だけ実行します。
 
 ```sh
-npm create astro@latest -- --template minimal
+npm run cms:import
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+二重登録を避けるため再実行はしないでください。移行後はPOST権限を外し、
+`MICROCMS_WRITE_API_KEY` も削除します。サイト表示用キーはGET権限だけにします。
 
-## 🚀 Project Structure
+## 開発とビルド
 
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+```sh
+npm run dev
+npm run build
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
-
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+このサイトは静的ビルド時にmicroCMSを読み込みます。公開後の更新を反映するには、
+microCMSのWebhookからホスティングサービスのデプロイフックを呼び出してください。

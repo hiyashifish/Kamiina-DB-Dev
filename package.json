@@ -6,6 +6,7 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "cms:import": "node --env-file=.env scripts/import-cards-to-microcms.mjs",
     "astro": "astro"
   },
   "dependencies": {

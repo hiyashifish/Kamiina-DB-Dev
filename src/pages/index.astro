@@ -2,19 +2,11 @@
 const title = "Kamiina DB";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import DataCard from "../components/DataCard.astro";
-import data from "../data/cards.json";
+import { getCards, type CardItem } from "../lib/microcms";
 import EpisodeIndex from "../components/EpisodeIndex.astro";
 import MobileMenu from "../components/MobileMenu.astro";
 
-/** 型定義 */
-interface CardItem {
-  id: string | number;
-  title: string;
-  caption: string;
-  description: string;
-  tag: string;
-  href: string;
-}
+const data = await getCards();
 
 /** 数値化（"9.5" も 9.5 に） */
 const parseEp = (id: string | number | null | undefined): number | null => {
@@ -27,7 +19,7 @@ const parseEp = (id: string | number | null | undefined): number | null => {
 /* ここがポイント：最初から型付きの空オブジェクトにする */
 /** 1) 整数話ごとにグルーピング（小数は切り捨てで同じ箱へ） */
 const groupedByInt: Record<number, CardItem[]> = {};
-for (const item of data as CardItem[]) {
+for (const item of data) {
   const ep = parseEp(item.id);
   if (ep == null) continue;
   const key = Math.floor(ep); // ← 整数話キー
